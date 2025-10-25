@@ -2,6 +2,11 @@ from flask import Flask, request, jsonify
 from models.task import Task
 app = Flask(__name__)
 
+# CRUD
+# Create, Read, Update and Delete = Criar, Ler, Atualizar e Deletar
+# Tabela: Tarefa
+
+
 tasks = []
 task_id_control = 1
 
@@ -36,13 +41,15 @@ def get_task(id):
         
     return jsonify({"message": "Não foi possível encontrar atividade"}), 404
 
+
 @app.route('/tasks/<int:id>', methods=['PUT'])
 def update_task(id):
-
     task = None
     for t in tasks:
         if t.id == id:
             task = t
+            break
+
     print(task)
     if task == None:
         return jsonify({"message": "Não foi possível encontrar a atividade"}), 404
@@ -53,6 +60,21 @@ def update_task(id):
     task.completed = data['completed']
     print(task)
     return jsonify ({"message": "Tarefa atualizada com sucesso"})
+
+@app.route('/tasks/<int:id>', methods=['DELETE'])
+def delete_task(id):
+    task = None
+    for t in tasks:
+        if t.id == id:
+            task = t
+            break
+    
+    if task == None:
+        return jsonify({"message": "Não foi possível encontrar a atividade"}), 404
+    
+    tasks.remove(task)
+    return jsonify({"message": "Tarefa deletada com sucesso"})
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
